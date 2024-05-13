@@ -102,5 +102,5 @@ while True:
     print("video uploaded 2, sleeping for 30 mins")
     time.sleep(1800)
     get_reels(accounts,client,db)
-    print("scrapping done, sleeping for 5 mins")
+    print("scrapping done, sleeping for 5 mins ")
     time.sleep(300)
