@@ -81,7 +81,7 @@ def upload_reels(api,db):
 
 client = Client()
 db     = db.db()
-client.login('ganje.salamanca','qwerty1234')
+client.login('Automagic_Memes','Qwerty@12345')
 
 accounts= [ "sarcastic_us",
             "idiotic.trolls",
