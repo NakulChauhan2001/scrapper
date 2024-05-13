@@ -10,7 +10,6 @@ def get_best_reel(db,query):
     mycursor = db.cursor()
     mycursor.execute(query) 
     data = mycursor.fetchall()  
-
     return data
 
 def update_reel(db,query,id):
@@ -18,7 +17,6 @@ def update_reel(db,query,id):
     value = (id,)
     mycursor.execute(query,value)
     db.commit()   
-
     return "done"
 
 def get_reel(db, query, id):

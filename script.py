@@ -4,11 +4,16 @@ from datetime import datetime
 import query
 import db
 import controllers
+import time
+
+# --------------------------------------------------------------------------------------------------------------------
 
 CURRENT_DIR = os.getcwd() + os.sep
 DOWNLOAD_DIR = CURRENT_DIR + 'downloads' + os.sep
 UPLOAD_DIR=DOWNLOAD_DIR+'video.mp4'
+THUMBNAIL_DIR=DOWNLOAD_DIR+'video.mp4.jpg'
 
+# --------------------------------------------------------------------------------------------------------------------
 
 def time_difference_in_minutes(dt1):
     dt2 = datetime.now(dt1.tzinfo)
@@ -17,63 +22,86 @@ def time_difference_in_minutes(dt1):
     
     return diff_minutes
 
-def get_reels(account,api,db):
-    
-    user_id = api.user_id_from_username(account)
-    medias =client.user_clips(user_id,5)
-    
-    for i in medias:
+# --------------------------------------------------------------------------------------------------------------------
+
+def get_reels(accounts,api,db):
+    for acc in accounts:
+
+        user_id = api.user_id_from_username(acc)
+        medias = client.user_clips(user_id,20)
         
-        data = {
-           "id" : i.id,
-           "upload_time" : i.taken_at,
-           "like_count" : i.like_count,
-           "play_count" : i.play_count,
-           "comment_count" : i.comment_count,
-           "caption" : i.caption_text,
-           "video_url" : str(i.video_url),
-           "strength" : (((i.like_count +  i.comment_count)*10000)/time_difference_in_minutes(i.taken_at))
-        }
+        for i in medias:
+    
+            data = {
+            "id" : i.id,
+            "upload_time" : i.taken_at,
+            "like_count" : i.like_count,
+            "play_count" : i.play_count,
+            "comment_count" : i.comment_count,
+            "caption" : str(i.caption_text),
+            "video_url" : str(i.video_url),
+            "strength" : (((i.like_count +  i.comment_count)*10000)/time_difference_in_minutes(i.taken_at))
+            }
 
-        check = controllers.get_reel(db,query.GET_REEL,data["id"])
+            check = controllers.get_reel(db,query.GET_REEL,data["id"])
 
-        if(check) :
-            continue
-        else :
-            controllers.insert_reel(db,query.INSERT_REEL,data)
-
-    upload_reels(api,db)
+            if (check) :
+                continue
+            else :
+                controllers.insert_reel(db,query.INSERT_REEL,data)
 
     return "done"
+
+# --------------------------------------------------------------------------------------------------------------------
 
 def upload_reels(api,db):
 
     reels = controllers.get_best_reel(db,query.GET_BEST_REEL)
 
-    print(reels)
-    
-    CAPTION = reels[0][5]
-    VIDEO_URL = reels[0][6]
-     
-    client.video_download_by_url(VIDEO_URL,filename='video',folder=DOWNLOAD_DIR) 
-    media = api.clip_upload(
-    UPLOAD_DIR,
-    CAPTION
-    )
+    for reel in reels:
+        CAPTION = reel[5]
+        VIDEO_URL = reel[6]
+        
+        client.video_download_by_url(VIDEO_URL,filename='video',folder=DOWNLOAD_DIR) 
+        media = api.clip_upload(
+        UPLOAD_DIR,
+        CAPTION
+        )
+        controllers.update_reel(db, query.UPDATE_REEL, reel[0])
 
-    os.remove(UPLOAD_DIR)
+        os.remove(UPLOAD_DIR)
+        os.remove(THUMBNAIL_DIR)
 
     return "done"
 
+
+# --------------------------------------------------------------------------------------------------------------------
+
 client = Client()
-db = db.db()
+db     = db.db()
 client.login('ganje.salamanca','qwerty1234')
-medias = get_reels('amrutamokal',client,db) 
+
+accounts= [ "sarcastic_us",
+            "idiotic.trolls",
+            "trolls_official",
+            "_naughtysociety",
+            "ghantaa",
+            "daily_over_dose",
+            "trollscasm",
+            "log.kya.sochenge",
+          ]
+
+# --------------------------------------------------------------------------------------------------------------------
 
 
-# c=1
-# for reel in medias:
-#     if reel.video_url != None :
-#         # client.video_download_by_url(reel.video_url,filename='video'+str(c),folder=DOWNLOAD_DIR)
-#         c=c+1
-# # upload_reels(client)18:27:20	DELETE FROM reels	Error Code: 1175. You are using safe update mode and you tried to update a table without a WHERE that uses a KEY column.  To disable safe mode, toggle the option in Preferences -> SQL Editor and reconnect.	0.0032 sec
+while True:
+
+    upload_reels(client,db)
+    print("video uploaded 1, sleeping for 30 mins")
+    time.sleep(1800)
+    upload_reels(client,db)
+    print("video uploaded 2, sleeping for 30 mins")
+    time.sleep(1800)
+    get_reels(accounts,client,db)
+    print("scrapping done, sleeping for 5 mins")
+    time.sleep(300)
