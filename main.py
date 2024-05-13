@@ -23,3 +23,6 @@ def hello_world():
     script.main(api,database)
     return "done"
 
+if __name__ == "__main__":
+    from waitress import serve
+    serve(app, host="0.0.0.0",port=3143)
