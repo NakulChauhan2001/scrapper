@@ -59,6 +59,8 @@ def upload_reels(api,db):
     reels = controllers.get_best_reel(db,query.GET_BEST_REEL)
 
     for reel in reels:
+        os.remove(UPLOAD_DIR)
+        os.remove(THUMBNAIL_DIR)
         CAPTION = reel[5]
         VIDEO_URL = reel[6]
         
