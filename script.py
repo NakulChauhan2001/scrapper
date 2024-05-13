@@ -59,9 +59,9 @@ def upload_reels(api,db):
     reels = controllers.get_best_reel(db,query.GET_BEST_REEL)
     media = api.clip_upload(
     UPLOAD_DIR,
-    CAPTION
+    reels[0][5]
     )
-    controllers.update_reel(db, query.UPDATE_REEL, reel[0])
+    controllers.update_reel(db, query.UPDATE_REEL, reels[0][0])
     # for reel in reels:
     #     CAPTION = reel[5]
     #     VIDEO_URL = reel[6]
