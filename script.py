@@ -57,20 +57,23 @@ def get_reels(accounts,api,db):
 def upload_reels(api,db):
 
     reels = controllers.get_best_reel(db,query.GET_BEST_REEL)
+    media = api.clip_upload(
+    UPLOAD_DIR,
+    CAPTION
+    )
+    controllers.update_reel(db, query.UPDATE_REEL, reel[0])
+    # for reel in reels:
+    #     CAPTION = reel[5]
+    #     VIDEO_URL = reel[6]
+        # client.video_download_by_url(VIDEO_URL,filename='video',folder=DOWNLOAD_DIR) 
+        # media = api.clip_upload(
+        # UPLOAD_DIR,
+        # CAPTION
+        # )
+        # controllers.update_reel(db, query.UPDATE_REEL, reel[0])
 
-    for reel in reels:
-        CAPTION = reel[5]
-        VIDEO_URL = reel[6]
-        
-        client.video_download_by_url(VIDEO_URL,filename='video',folder=DOWNLOAD_DIR) 
-        media = api.clip_upload(
-        UPLOAD_DIR,
-        CAPTION
-        )
-        controllers.update_reel(db, query.UPDATE_REEL, reel[0])
-
-        os.remove(UPLOAD_DIR)
-        os.remove(THUMBNAIL_DIR)
+        # os.remove(UPLOAD_DIR)
+        # os.remove(THUMBNAIL_DIR)
 
     return "done"
 
