@@ -23,7 +23,3 @@ def hello_world():
     script.main(api,database)
     return "done"
 
-
-if __name__ == "__main__":
-
-    app.run()
