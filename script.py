@@ -1,8 +1,7 @@
-from instagrapi import Client
+
 import os
 from datetime import datetime
 import query
-import db
 import controllers
 import time
 
@@ -28,7 +27,7 @@ def get_reels(accounts,api,db):
     for acc in accounts:
 
         user_id = api.user_id_from_username(acc)
-        medias = client.user_clips(user_id,20)
+        medias = api.user_clips(user_id,20)
         
         for i in medias:
     
@@ -61,7 +60,7 @@ def upload_reels(api,db):
     for reel in reels:
         CAPTION = reel[5]
         VIDEO_URL = reel[6]
-        client.video_download_by_url(VIDEO_URL,filename='video',folder=DOWNLOAD_DIR) 
+        api.video_download_by_url(VIDEO_URL,filename='video',folder=DOWNLOAD_DIR) 
         media = api.clip_upload(
         UPLOAD_DIR,
         CAPTION
@@ -75,32 +74,32 @@ def upload_reels(api,db):
 
 
 # --------------------------------------------------------------------------------------------------------------------
+def main(api,database):
+    
+    
 
-client = Client()
-db     = db.db()
-client.login('Automagic_Memes','Qwerty@12345')
+    accounts= [ "sarcastic_us",
+                "idiotic.trolls",
+                "trolls_official",
+                "_naughtysociety",
+                "ghantaa",
+                "daily_over_dose",
+                "trollscasm",
+                "log.kya.sochenge",
+            ]
 
-accounts= [ "sarcastic_us",
-            "idiotic.trolls",
-            "trolls_official",
-            "_naughtysociety",
-            "ghantaa",
-            "daily_over_dose",
-            "trollscasm",
-            "log.kya.sochenge",
-          ]
+    # --------------------------------------------------------------------------------------------------------------------
 
-# --------------------------------------------------------------------------------------------------------------------
+    print("starting")
+    while True:
+        upload_reels(api,database)
+        print("video uploaded 1, sleeping for 30 mins")
+        time.sleep(1800)
+        upload_reels(api,database)
+        print("video uploaded 2, sleeping for 30 mins")
+        time.sleep(1800)
+        get_reels(accounts,api,database)
+        print("scrapping done, sleeping for 5 mins ")
+        time.sleep(300)
+    return "done"
 
-
-while True:
-
-    upload_reels(client,db)
-    print("video uploaded 1, sleeping for 30 mins")
-    time.sleep(1800)
-    upload_reels(client,db)
-    print("video uploaded 2, sleeping for 30 mins")
-    time.sleep(1800)
-    get_reels(accounts,client,db)
-    print("scrapping done, sleeping for 5 mins ")
-    time.sleep(300)

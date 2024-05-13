@@ -1,5 +1,5 @@
 import psycopg2
-def db():
+def connect():
     conn = psycopg2.connect(
     host ="kashin.db.elephantsql.com",
     user ="vjhcmtzq",
