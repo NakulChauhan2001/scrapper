@@ -11,7 +11,15 @@ CURRENT_DIR = os.getcwd() + os.sep
 DOWNLOAD_DIR = CURRENT_DIR + 'downloads' + os.sep
 UPLOAD_DIR=DOWNLOAD_DIR+'video.mp4'
 THUMBNAIL_DIR=DOWNLOAD_DIR+'video.mp4.jpg'
-
+accounts= [ "sarcastic_us",
+                "idiotic.trolls",
+                "trolls_official",
+                "_naughtysociety",
+                "ghantaa",
+                "daily_over_dose",
+                "trollscasm",
+                "log.kya.sochenge",
+            ]
 # --------------------------------------------------------------------------------------------------------------------
 
 def time_difference_in_minutes(dt1):
@@ -23,14 +31,13 @@ def time_difference_in_minutes(dt1):
 
 # --------------------------------------------------------------------------------------------------------------------
 
-def get_reels(accounts,api,db):
+def get_reels(api,db):
     for acc in accounts:
 
         user_id = api.user_id_from_username(acc)
-        medias = api.user_clips(user_id,20)
+        medias = api.user_clips(user_id,6)
         
         for i in medias:
-    
             data = {
             "id" : i.id,
             "upload_time" : i.taken_at,
@@ -51,11 +58,13 @@ def get_reels(accounts,api,db):
 
     return "done"
 
+
 # --------------------------------------------------------------------------------------------------------------------
 
 def upload_reels(api,db):
-
+    print("Trying to upload")
     reels = controllers.get_best_reel(db,query.GET_BEST_REEL)
+    print("reel data",reels)
     
     for reel in reels:
         CAPTION = reel[5]
@@ -72,34 +81,27 @@ def upload_reels(api,db):
 
     return "done"
 
-
 # --------------------------------------------------------------------------------------------------------------------
-def main(api,database):
+
+
+def main(api,database,request):
     
     
 
-    accounts= [ "sarcastic_us",
-                "idiotic.trolls",
-                "trolls_official",
-                "_naughtysociety",
-                "ghantaa",
-                "daily_over_dose",
-                "trollscasm",
-                "log.kya.sochenge",
-            ]
+    
 
     # --------------------------------------------------------------------------------------------------------------------
 
     print("starting")
-    while True:
-        upload_reels(api,database)
-        print("video uploaded 1, sleeping for 30 mins")
-        time.sleep(1800)
-        upload_reels(api,database)
-        print("video uploaded 2, sleeping for 30 mins")
-        time.sleep(1800)
-        get_reels(accounts,api,database)
-        print("scrapping done, sleeping for 5 mins ")
-        time.sleep(300)
-    return "done"
+    # while True:
+    #     upload_reels(api,database)
+    #     print("video uploaded 1, sleeping for 30 mins")
+    #     time.sleep(1800)
+    #     upload_reels(api,database)
+    #     print("video uploaded 2, sleeping for 30 mins")
+    #     time.sleep(1800)
+    #     get_reels(api,database)
+    #     print("scrapping done, sleeping for 5 mins ")
+    #     time.sleep(300)
+    # return "done"
 

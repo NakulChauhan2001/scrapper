@@ -5,3 +5,5 @@ GET_BEST_REEL = "SELECT * FROM reels WHERE upload = False ORDER BY strength DESC
 UPDATE_REEL = "UPDATE reels SET upload = True WHERE id = %s;"
 
 GET_REEL = "SELECT * from reels WHERE id = %s;"
+
+DELETE_CURRENT= "DELETE FROM reels;"

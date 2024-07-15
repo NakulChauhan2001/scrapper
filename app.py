@@ -13,15 +13,26 @@ app.debug = True
 def test():
     return "hello world"
 
-@app.route("/api")
-def hello_world():
+@app.route("/scrape")
+def scrapping():
     print("running")
     api = Client()
     database     = connector.connect()
     print("logged in")
     api.login('Automagic_Memes','Qwerty@12345')
-    script.main(api,database)
+    script.get_reels(api,database)
     return "done"
+
+@app.route("/upload")
+def uploading():
+    print("running")
+    api = Client()
+    database     = connector.connect()
+    print("logged in")
+    api.login('Automagic_Memes','Qwerty@12345')
+    script.upload_reels(api,database)
+    return "done"
+
 
 if __name__ == "__main__":
     from waitress import serve
